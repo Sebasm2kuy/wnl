@@ -278,3 +278,31 @@ Observaciones principales:
 **Estado:** V2 sigue siendo PROPUESTA pendiente de aprobación. No se modificaron `PLANO_DISTRIBUCION_HABITACION_WNL_v2.md` ni `MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL_v2.svg` durante esta revisión.
 
 **Próximo paso:** una pasada de corrección de QA visual/editorial, sin alterar la distribución principal; después, volver a presentar la V2 al autor. No iniciar todavía el escenario final ni declarar probada la navegación en Godot.
+
+
+## ACTUALIZACIÓN — CORRECCIÓN QA DEL PLANO v2 (2026-11-14, iteración 3)
+
+Se ejecutó la pasada de corrección de los hallazgos de `REVISION_QA_PLANO_HABITACION_WNL_V2.md` **sin alterar la distribución espacial** (secuencia, coordenadas de mobiliario, encuadres, 8 colisiones, H01–H16, alfombra y mesa baja walk-behind intactos).
+
+Correcciones aplicadas:
+
+- **QA-V2-01:** leyenda del SVG trasladada a la esquina superior derecha (X 2960–3780, Y 50–315), libre de muebles, marcadores y rótulos. El archivador izquierdo y su rótulo quedan visibles.
+- **QA-V2-02:** marcador H12 reubicado debajo del reloj (2470, 370); rótulo «RELOJ» libre.
+- **QA-V2-03:** rótulo de la mesa baja en dos líneas dentro del mueble y marcador H14 debajo de la mesa (3165, 1030).
+- **QA-V2-04:** rótulo «GRABADORA» en la parte alta del mueble (Y 645), separado del marcador H08.
+- **QA-V2-05:** marcador fijo de H15 retirado; H15 se documenta como **hotspot contextual** (leyenda del SVG y secciones 4 y 6 del plano). Numeración H01–H16 conservada.
+- **QA-V2-06:** errata `6690` corregida a `690` en el anexo de colisiones; coherencia verificada contra implantación, sección 5 y SVG.
+- **QA-V2-07:** filas de silla y rack separadas en el anexo; integridad de todas las tablas verificada.
+- Adicionales (detectados por el verificador extendido): H03 separado de «SILLA» y H07 separado de «RADIO»/«RACK EQUIPOS».
+
+Mejoras de validación:
+
+- `verificar_svg_v2.py` reescrito: distingue hotspots fijos (15) de contextuales (H15) y comprueba solapes reales entre leyenda, marcadores, rótulos y mobiliario.
+- `validar_plano_v2.py` imprime ahora el alcance real de la validación (BFS de puntos sobre cuadrícula de 8 px; no modela huella del personaje, oclusión ni cámara).
+- Nuevo `render_y_verificar_v2.py`: renderiza el SVG y verifica por muestreo de píxeles las regiones de las correcciones (9/9 en verde), generando vistas completa, por encuadre y reducida.
+
+Mesa baja (walk-behind): el plano v2 documenta ahora la distinción entre colisión física, oclusión visual por profundidad y navegación de aproximación, con el criterio de decisión para el Art Test. **La prueba en Godot NO se realizó**: el repositorio no contiene proyecto Godot ni Art Test de la Habitación. Queda registrada como pendiente.
+
+**Estado:** todos los hallazgos QA-V2-01 a QA-V2-07 corregidos y publicados. La v2 continúa como **PROPUESTA PENDIENTE DE APROBACIÓN DEL AUTOR**, lista para su revisión de distribución.
+
+**Próximo paso:** revisión del autor de la v2 corregida (checklist §10 del plano). Tras la aprobación: promocionar a distribución definitiva, y en la fase de Art Test probar la mesa baja con sprite provisional antes de congelar el arte.

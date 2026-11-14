@@ -132,3 +132,54 @@ Después de esa pasada, presentar de nuevo la v2 al autor para aprobación. Hast
 ---
 
 **Conclusión:** la v2 resuelve la organización espacial principal, pero todavía necesita una pasada final de legibilidad, limpieza documental y validación de walk-behind. Esta revisión no sustituye la aprobación del autor.
+
+---
+
+## 8. Iteración de corrección QA (2026-11-14, segunda pasada)
+
+Sobre la base de los hallazgos anteriores se ejecutó la pasada de corrección **sin modificar la distribución espacial**: secuencia, coordenadas de mobiliario, encuadres, 8 colisiones, H01–H16, alfombra y mesa baja walk-behind permanecen intactos.
+
+### Resultado por hallazgo
+
+| Hallazgo | Estado | Detalle de la corrección |
+|---|---|---|
+| QA-V2-01 · Leyenda sobre el archivador | **Corregido** | Leyenda trasladada a la esquina superior derecha (X 2960–3780, Y 50–315), zona de pared libre verificada programáticamente: no interseca reloj (X ≤ 2550), cama (Y ≥ 500), armario (X ≥ 3540 con Y ≥ 330; margen de 15 px) ni ningún mueble, colisión, hotspot, zona de aproximación o rótulo. El archivador izquierdo y su rótulo quedan visibles. |
+| QA-V2-02 · H12 sobre «RELOJ» | **Corregido** | Marcador H12 reubicado debajo del reloj, centrado en (2470, 370), fuera del círculo del mueble (Y 170–330). Rótulo «RELOJ» intacto dentro del mueble. Verificado en render: sin amarillo sobre el reloj, marcador visible debajo. |
+| QA-V2-03 · H14 sobre «MESA BAJA» | **Corregido** | Rótulo dividido en dos líneas («MESA BAJA» / «(WALK-BEHIND)», Y 922/968) dentro de la mesa; marcador H14 movido debajo de la mesa, centro (3165, 1030), radio 26. Ubicación de la mesa sin cambios. Verificado en render. |
+| QA-V2-04 · H08 sobre «GRABADORA» | **Corregido** | Rótulo «GRABADORA» subido a Y 645 (parte alta del mueble); marcador H08 se mantiene a la derecha-abajo (1460, 700). Ambos legibles; verificado en render y por cajas estimadas. |
+| QA-V2-05 · H15 como marcador fijo | **Corregido** | Marcador fijo retirado del SVG. H15 se documenta como **hotspot contextual** en la leyenda («sin marcador fijo, hotspot por objeto») y en el plano v2 (sección 6 y nota en sección 4). La numeración H01–H16 se conserva: 15 marcadores fijos + H15 contextual. `verificar_svg_v2.py` adaptado para distinguir fijos de contextuales. |
+| QA-V2-06 · Coordenada 6690 | **Corregido** | `1620, 6690 → 2180, 790` → `1620, 690 → 2180, 790` en el anexo de colisiones. Coherencia verificada contra implantación, sección 5 y SVG (`y="690"`). Sin otras apariciones de 6690. |
+| QA-V2-07 · Filas silla/rack concatenadas | **Corregido** | Separadas en dos filas Markdown independientes con sus datos originales. Chequeo automático de integridad de tablas: todas las filas cierran con pipe y el número de columnas es consistente en todo el documento. |
+| §5 · Mesa baja / walk-behind | **Documentado; prueba en Godot PENDIENTE** | El plano v2 ahora distingue explícitamente colisión física / oclusión visual (dependiente de profundidad Y, `y-sort` o capa delantera) / navegación de aproximación, con criterio de decisión para el Art Test. El repositorio **no contiene proyecto Godot ni Art Test** de la Habitación: la prueba con sprite provisional no se realizó y no se declara validado el comportamiento. Registrado como pendiente. |
+
+### Correcciones adicionales detectadas por el verificador extendido
+
+Las nuevas comprobaciones de solapes del `verificar_svg_v2.py` detectaron y corrigieron dos casos del mismo tipo que los hallazgos QA, no reportados en la primera revisión:
+
+- H03 se solapaba con el rótulo «SILLA» → marcador movido a (610, 722).
+- H07 se solapaba con los rótulos «RADIO» y «RACK EQUIPOS» → marcador movido a (1310, 495).
+
+Ambos son marcadores de hotspot; ningún mueble cambió de posición.
+
+### Evidencia de validación
+
+- `scripts/validar_plano_v2.py`: **TODO OK** (cajas en lienzo, solapes con excepciones declaradas, 16 puntos de aproximación fuera de colisiones y alcanzables por BFS, despeje de banda ≥ 120 px, frente de interacción ≥ 150 px, encuadres). Se añadió al informe impreso el **alcance real** de la validación (puntos en cuadrícula de 8 px; no modela huella del personaje, oclusión ni cámara).
+- `scripts/verificar_svg_v2.py`: **VERIFICADO** (estructura + nuevas comprobaciones de solapes: leyenda vs. mobiliario/marcadores/rótulos, hotspots vs. rótulos, rótulos entre sí, marcadores en lienzo, H15 contextual documentado y sin marcador fijo, 13 coordenadas transcritas, encuadres).
+- `scripts/render_y_verificar_v2.py` (nuevo): renderiza el SVG y verifica por muestreo de píxeles las regiones de las 5 correcciones visuales + costura de cámara. **9/9 comprobaciones en verde.** Genera `vista_completa_3840x1080.png`, `encuadre1_1920x1080.png`, `encuadre2_1920x1080.png` y `vista_reducida.png`.
+
+### Archivos modificados en esta iteración
+
+- `AVENTURA GRAFICA/PLANO_DISTRIBUCION_HABITACION_WNL_v2.md` — QA-V2-06, QA-V2-07, nota de H15 en secciones 4 y 6, sección «Mesa baja: los tres sistemas en juego» con pendiente de Godot.
+- `AVENTURA GRAFICA/MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL_v2.svg` — QA-V2-01 a QA-V2-05 + H03/H07.
+- `AVENTURA GRAFICA/scripts/validar_plano_v2.py` — nota de alcance de la validación.
+- `AVENTURA GRAFICA/scripts/verificar_svg_v2.py` — reescrito: hotspots fijos vs. contextual + solapes.
+- `AVENTURA GRAFICA/scripts/render_y_verificar_v2.py` — nuevo.
+- `AVENTURA GRAFICA/REVISION_QA_PLANO_HABITACION_WNL_V2.md` — esta sección.
+- `AVENTURA GRAFICA/INSTRUCCIONES_PARA_Z_AI.md` e `HISTORIAL_CHAT/2026-11-14.md` — estado e historial.
+
+### Estado tras la iteración
+
+- **Corregidos:** QA-V2-01 a QA-V2-07.
+- **Pendiente de prueba en Godot:** comportamiento real de la mesa baja (oclusión por profundidad, acceso lateral a la cama, consecución de H14) y navegación con sprite provisional — requiere un Art Test que todavía no existe en el repositorio.
+- **No corregido (por diseño):** ninguno de los defectos listados queda sin resolver.
+- La v2 **continúa siendo PROPUESTA PENDIENTE DE APROBACIÓN DEL AUTOR**. Con las correcciones publicadas, queda lista para la revisión de distribución del autor.

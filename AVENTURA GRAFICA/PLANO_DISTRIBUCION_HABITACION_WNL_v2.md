@@ -96,9 +96,11 @@ Posiciones sugeridas donde el personaje se detiene antes de activar cada hotspot
 | Cama | (2890, 880) | Hacia la cama |
 | Mesa baja | (3140, 1000) | Hacia la mesa |
 | Armario | (3660, 870) | Hacia el armario |
-| Objetos personales | (870, 850) | Hacia superficies |
+| Objetos personales * | (870, 850) | Punto de referencia genérico, no ubicación de H15 |
 
 Las coordenadas Y son puntos de suelo, no centros visuales de hotspots. La interacción se activa al llegar al punto de aproximación o al entrar en el área válida, según el sistema de control.
+
+**\* Nota sobre el punto de objetos personales:** (870, 850) es solo un punto de aproximación de referencia junto al escritorio. No define la ubicación del hotspot H15: cada objeto personal tendrá su propio punto de aproximación según la superficie donde esté (escritorio, rack o estantes de la biblioteca). El SVG v2 no dibuja un marcador fijo para H15 por este motivo; su representación es una anotación contextual.
 
 ## 5. Colisiones y profundidad
 
@@ -121,7 +123,7 @@ La silla intruye en la banda de circulación hasta Y = 875, dejando **140 px lib
 
 ### Walk-behinds
 
-- **Mesa baja** delante de la cama: el personaje pasa por detrás; capa delantera con alfa, sin colisión.
+- **Mesa baja** delante de la cama: el personaje pasa por detrás; capa delantera con alfa, sin colisión declarada en este plano.
 - **Alfombra**: capa de suelo transitable; puede dibujarse bajo el personaje.
 - Primer plano de la silla si el personaje puede pasar delante de ella.
 - Esquinas o laterales de muebles que deban tapar parcialmente al personaje.
@@ -129,6 +131,16 @@ La silla intruye en la banda de circulación hasta Y = 875, dejando **140 px lib
 - Cualquier objeto que cruce visualmente la silueta del personaje durante el recorrido.
 
 Los walk-behinds son máscaras visuales con alfa y orden de dibujo; no son colisiones.
+
+### Mesa baja: los tres sistemas en juego (aclaración)
+
+«Mesa baja walk-behind, sin colisión» no significa que cualquier comportamiento del personaje sea aceptable. Hay que distinguir tres sistemas distintos, y esta propuesta los trata por separado:
+
+1. **Colisión física (navegación):** dónde puede desplazarse el personaje. El plano actual no declara colisión sólida para la mesa; el suelo bajo la caja X 2980–3300 / Y 880–990 es transitable según las colisiones vigentes (comprobado por BFS: H14 en (3140, 1000) y la aproximación a la cama en (2890, 880) son alcanzables).
+2. **Oclusión visual (walk-behind):** cuándo la mesa se dibuja por delante del personaje. La máscara de oclusión debe depender de la profundidad (Y) real del personaje: si su base está por encima de Y ≈ 935 (detrás de la mesa), la mesa lo tapa parcialmente; si está por debajo (por delante), no. En Godot esto se resuelve con orden de dibujo por Y (`y-sort`) o capa delantera separada, no con una máscara fija que tape siempre.
+3. **Navegación de aproximación:** cómo llega el personaje a H14 y a la cama. Acceso a la cama por el lateral izquierdo de la mesa (tramo X 2800–2980 libre); acceso a H14 desde delante o desde los costados. Si en el Art Test el personaje «camina sobre el tablero» al cruzar la zona, la solución es una colisión baja específica del tablero o un corredor de navegación por detrás (Y < 880), decisión que se tomará con evidencia del motor, no por intuición.
+
+**Pendiente de prueba en Godot (Art Test):** el repositorio todavía no contiene un proyecto Godot de la Habitación ni un Art Test preparado para este escenario. Por tanto, el comportamiento real de oclusión, el acceso por el lateral izquierdo y la consecución de H14 con un sprite provisional **no han sido probados**. El BFS del script valida la alcanzabilidad geométrica con las colisiones declaradas; no es una prueba funcional en el motor. Esta comprobación queda registrada como pendiente y forma parte de la fase de Art Test, no de esta iteración documental.
 
 ### Regla de seguridad de navegación
 
@@ -152,8 +164,10 @@ Prioridad: que el personaje llegue a cada punto de aproximación sin quedar atra
 | H12 Reloj | X 2390–2550, Y 170–330 | Consultar |
 | H13 Armario | X 3540–3800, Y 330–850 | Abrir / almacenamiento |
 | H14 Mesa baja | X 2980–3300, Y 880–990 | Examinar |
-| H15 Objetos personales | Según objeto sobre escritorio, rack o estantes | Examinar / recoger cuando corresponda |
+| H15 Objetos personales * | Sin caja fija: según objeto sobre escritorio, rack o estantes | Examinar / recoger cuando corresponda |
 | H16 Archivadores izq. | X 60–320, Y 330–825 | Abrir / buscar / examinar |
+
+**\* H15 es un hotspot contextual, no un área fija.** Identifica el conjunto de objetos personales distribuidos sobre distintas superficies. No representa un objeto único ni tiene ubicación definitiva: cada objeto personal (taza, foto, llave, nota, etc.) recibirá su propio hotspot y su propio punto de aproximación cuando el arte final los concrete. Por eso el SVG v2 no dibuja un marcador fijo para H15 y lo documenta como anotación. La numeración H01–H16 se conserva completa: H15 sigue reservado para esta familia de interacciones.
 
 Las áreas son cajas de referencia iniciales. En el montaje real deben recortarse para que un hotspot no tape a otro ni active interacciones a través de muebles. Los elementos sobre una superficie pueden tener hotspots individuales.
 
@@ -262,8 +276,9 @@ Esta versión incorpora una comprobación automática ejecutada sobre las coorde
 |---|---|---|
 | Archivadores izq. | — | 60, 730 → 320, 825 |
 | Escritorio | 180, 730 → 790, 825 | 380, 730 → 980, 825 |
-| Silla | 455, 790 → 645, 875 | 540, 800 → 680, 875 || Rack (antes consola) | 1650, 730 → 2200, 825 | 1080, 730 → 1560, 825 |
-| Biblioteca | 900, 690 → 1430, 790 | 1620, 6690 → 2180, 790 |
+| Silla | 455, 790 → 645, 875 | 540, 800 → 680, 875 |
+| Rack (antes consola) | 1650, 730 → 2200, 825 | 1080, 730 → 1560, 825 |
+| Biblioteca | 900, 690 → 1430, 790 | 1620, 690 → 2180, 790 |
 | Cajonera (antes archivador) | 2390, 730 → 2700, 825 | 2320, 730 → 2650, 825 |
 | Cama | 2850, 740 → 3520, 850 | 2800, 740 → 3480, 850 |
 | Armario | 3540, 730 → 3800, 850 | 3540, 730 → 3800, 850 |
