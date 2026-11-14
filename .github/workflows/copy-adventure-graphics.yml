@@ -1,0 +1,38 @@
+name: Copy AVENTURA GRAFICA from novela
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/copy-adventure-graphics.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  copy-folder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out wnl
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Get documentation repository
+        run: git clone --depth 1 --branch main https://github.com/Sebasm2kuy/novela.git /tmp/novela
+
+      - name: Copy the complete folder, including binary assets
+        run: |
+          rm -rf "AVENTURA GRAFICA"
+          cp -a "/tmp/novela/AVENTURA GRAFICA" "./AVENTURA GRAFICA"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "AVENTURA GRAFICA"
+          if git diff --cached --quiet; then
+            echo "The folder is already up to date."
+          else
+            git commit -m "Copy complete AVENTURA GRAFICA folder from novela"
+            git push
+          fi
