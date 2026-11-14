@@ -1,13 +1,19 @@
 # INSTRUCCIONES PARA Z.AI — PROYECTO WNL
 
 **Proyecto:** Aventura gráfica WNL  
-**Repositorio:** `Sebasm2kuy/novela`  
+**Repositorio:** `Sebasm2kuy/wnl`  
 **Carpeta de trabajo:** `AVENTURA GRAFICA/`  
 **Motor elegido:** Godot 4  
 **Estado del documento:** vivo; actualizar en cada iteración de diseño, especificación o desarrollo.  
 **Última actualización:** 2026-11-14
 
 ---
+
+## 0. Repositorio y separación de proyectos
+
+El repositorio `Sebasm2kuy/wnl` es ahora **el repositorio exclusivo del juego**: aquí se guarda el progreso de la aventura gráfica y aquí se ejecutará (web / GitHub Pages). El material narrativo original vive en `Sebasm2kuy/novela`; este repo contiene la copia de trabajo de la adaptación. No sincronizar hacia `novela`.
+
+**Nota:** el proyecto **Místicas** (prueba de concepto / Art Test con bundle Godot) queda **archivado**. No forma parte de WNL; no subir ni retomar su material sin una decisión expresa del autor. Las reglas de separación respecto de otros proyectos del repositorio original (por ejemplo `FICCION SONORA/`) se mantienen según el apartado 2.
 
 ## 1. Propósito de este documento
 
@@ -47,10 +53,11 @@ Lee los documentos completos y en este orden. Si el repositorio cambia, vuelve a
 1. `AVENTURA GRAFICA/INSTRUCCIONES_PARA_Z_AI.md` — este documento: estado, límites y próximo paso.
 2. `AVENTURA GRAFICA/DIRECTRICES_TECNICAS_Y_ARTISTICAS.md` — motor, arquitectura, estilo y pipeline general.
 3. `AVENTURA GRAFICA/MAPA_FUNCIONAL_HABITACION_WNL.md` — función del escenario, recorrido, interacciones y restricciones narrativas.
-4. `AVENTURA GRAFICA/PLANO_DISTRIBUCION_HABITACION_WNL.md` — distribución espacial cuantificada; propuesta aún no aprobada.
-5. `AVENTURA GRAFICA/MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL.svg` — esquema visual técnico provisional; no es arte final ni distribución aprobada.
+4. `AVENTURA GRAFICA/PLANO_DISTRIBUCION_HABITACION_WNL_v2.md` — **versión 2** de la distribución espacial cuantificada, derivada de la revisión visual de la imagen conceptual; propuesta aún no aprobada. La v1 se conserva como referencia histórica.
+5. `AVENTURA GRAFICA/MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL_v2.svg` — esquema visual técnico v2; no es arte final ni distribución aprobada. El SVG v1 se conserva como referencia.
 6. `AVENTURA GRAFICA/HISTORIAL_CHAT/` — consulta las entradas recientes para recuperar decisiones y cambios de cada iteración.
 7. Revisa los recursos de `AVENTURA GRAFICA/Escenarios/` cuando la tarea requiera contrastar el arte conceptual o producir recursos visuales.
+8. `AVENTURA GRAFICA/scripts/` — scripts de validación de coordenadas del plano; ejecutar de nuevo tras cualquier ajuste de coordenadas.
 
 Si encuentras documentos adicionales en `AVENTURA GRAFICA/`, identifica su función antes de ignorarlos o modificarlos. No supongas que un archivo está obsoleto por no aparecer en esta lista.
 
@@ -120,9 +127,13 @@ Trabaja paso a paso. No adelantes varias fases que todavía dependen de una revi
 ### Material existente en el repositorio
 
 - `MAPA_FUNCIONAL_HABITACION_WNL.md`: mapa funcional con cuatro sectores orientativos, recorrido, interacciones y pruebas.
-- `PLANO_DISTRIBUCION_HABITACION_WNL.md`: propuesta cuantificada de ubicación de muebles y puntos de aproximación sobre 3840 × 1080.
-- `MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL.svg`: esquema vectorial de bloqueo con dos encuadres, mobiliario esquemático, colisiones, circulación y 15 hotspots.
-- `Escenarios/Habitación Espacial Retro en Pixel Art.png`: imagen conceptual preexistente.
+- `PLANO_DISTRIBUCION_HABITACION_WNL.md`: propuesta cuantificada v1 de ubicación de muebles y puntos de aproximación sobre 3840 × 1080.
+- `PLANO_DISTRIBUCION_HABITACION_WNL_v2.md`: **versión 2** cuantificada que aplica la secuencia de la imagen conceptual (archivadores → escritorio/PC → rack de equipos → biblioteca → cajonera+reloj → cama+mesa baja → armario), con anexo de diferencias v1→v2 y validación programática incluida.
+- `MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL.svg`: esquema vectorial de bloqueo v1 con dos encuadres, mobiliario esquemático, colisiones, circulación y 15 hotspots.
+- `MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL_v2.svg`: esquema vectorial v2, mismo lenguaje visual, con 16 hotspots, 8 colisiones, mesa baja como walk-behind y alfombra transitable.
+- `scripts/validar_plano_v2.py`: comprobación automática del plano v2 (solapes, BFS de alcanzabilidad, despejes, encuadres). Resultado actual: TODO OK.
+- `scripts/verificar_svg_v2.py`: comprobación automática del SVG v2 (conteos, coordenadas transcritas, encuadres). Resultado actual: OK.
+- `Escenarios/Habitación Espacial Retro en Pixel Art.png`: imagen conceptual preexistente (2048 × 768).
 
 ### Propuesta espacial provisional
 
@@ -151,20 +162,20 @@ No afirmes haber visto la imagen ni describas sus detalles por inferencia. El si
 
 ## 7. Próximo paso acordado
 
-**Fase actual: revisión visual y validación de la distribución de la Habitación.**
+**Fase actual: revisión del autor sobre el plano v2 (distribución derivada de la imagen conceptual).**
 
 Orden de trabajo:
 
-1. Inspeccionar la imagen conceptual original de la Habitación.
-2. Compararla con el plano cuantificado y el mapa SVG.
-3. Preparar una lista clara de coincidencias, discrepancias, elementos ausentes y elementos que no deberían estar.
-4. Proponer ajustes al plano, sin modificarlo silenciosamente.
-5. Presentar al autor las diferencias importantes para su aprobación.
-6. Una vez aprobada la distribución, actualizar el plano y el mapa visual.
+1. ~~Inspeccionar la imagen conceptual original de la Habitación.~~ (completado)
+2. ~~Compararla con el plano cuantificado y el mapa SVG.~~ (completado)
+3. ~~Preparar una lista clara de coincidencias, discrepancias y elementos ausentes.~~ (completado)
+4. ~~Proponer ajustes al plano, sin modificarlo silenciosamente.~~ (completado: plano v2 + SVG v2 publicados como propuesta)
+5. **El autor revisa el plano v2**: secuencia, muebles, walk-behinds, hotspots nuevos (H16 archivadores) y la biblioteca cruzando la costura de cámara. Pendiente de aprobación.
+6. Una vez aprobada la distribución, actualizar el plano y el mapa visual a versión definitiva (o promocionar la v2) y registrar la decisión.
 7. Después preparar el diseño de escenario panorámico final y definir qué elementos se separan como sprites, capas de fondo, objetos interactivos, walk-behinds y luces.
 8. Antes de escalar la producción, validar la composición y las interacciones con un Art Test en Godot.
 
-No saltar directamente a los pasos 6–8 mientras el plano siga sin aprobarse.
+No saltar directamente a los pasos 6–8 mientras el plano v2 siga sin aprobarse.
 
 ## 8. Reglas para Z.ai cuando reciba autorización para programar
 
@@ -232,3 +243,17 @@ Hallazgos principales:
 **Estado:** la revisión visual está realizada; la nueva distribución recomendada sigue pendiente de aprobación del autor. No modificar todavía el plano cuantificado ni el SVG como si la propuesta estuviera aprobada.
 
 **Próximo paso:** elaborar una versión revisada del plano de distribución a 3840 × 1080, basada en la secuencia visual observada, y presentarla para revisión. Actualizar este documento y el historial en la siguiente iteración.
+
+## ACTUALIZACIÓN — PLANO v2 Y REPOSITORIO WNL (2026-11-14, iteración 2)
+
+El repositorio del juego pasa a ser **`Sebasm2kuy/wnl`** (decisión del autor): aquí se guarda el progreso y aquí se ejecutará el juego (web / GitHub Pages). La carpeta `AVENTURA GRAFICA/` se replicó íntegra desde `novela`. El proyecto **Místicas** queda archivado y fuera del alcance.
+
+Se publicó el paquete de la **propuesta v2** de la distribución:
+
+- `AVENTURA GRAFICA/PLANO_DISTRIBUCION_HABITACION_WNL_v2.md` — plano cuantificado revisado. Cambios principales: rack de equipos (radio + grabadora) a la izquierda de la biblioteca; archivadores altos en el extremo izquierdo con hotspot H16; biblioteca reubicada al centro exacto (X 1620–2180), cruzando la costura de cámara; reloj sobre la cajonera derecha; mesa baja delante de la cama como walk-behind; alfombra transitable; 16 puntos de aproximación; 8 colisiones; anexo de diferencias v1→v2.
+- `AVENTURA GRAFICA/MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL_v2.svg` — mapa técnico v2, mismo lenguaje visual que el v1: 16 hotspots numerados, 8 colisiones, walk-behind y alfombra marcados, dos encuadres.
+- `AVENTURA GRAFICA/scripts/validar_plano_v2.py` y `verificar_svg_v2.py` — validación programática (solapes, BFS de alcanzabilidad de los 16 puntos, despeje ≥120 px, encuadres). Ambos en verde; re-ejecutar tras cualquier ajuste de coordenadas.
+
+**Estado:** el plano v2 queda publicado como PROPUESTA pendiente de aprobación del autor. La v1 no se elimina: coexiste como referencia para comparación.
+
+**Próximo paso:** revisión del autor del plano v2 (checklist en §10 de `PLANO_DISTRIBUCION_HABITACION_WNL_v2.md`). Tras la aprobación: promocionar a distribución definitiva y avanzar al diseño del escenario panorámico final y sus capas.

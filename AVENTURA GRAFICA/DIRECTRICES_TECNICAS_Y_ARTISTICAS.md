@@ -2,7 +2,7 @@
 
 **Estado:** base de trabajo acordada  
 **Proyecto:** aventura gráfica point-and-click original  
-**Repositorio:** `Sebasm2kuy/novela`  
+**Repositorio:** `Sebasm2kuy/wnl`  
 **Carpeta:** `AVENTURA GRAFICA/`
 
 Este documento reúne las decisiones técnicas y artísticas compartidas para orientar el desarrollo. Separa las definiciones ya comunicadas de los parámetros que todavía deben especificarse.
