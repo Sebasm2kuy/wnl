@@ -257,3 +257,24 @@ Se publicó el paquete de la **propuesta v2** de la distribución:
 **Estado:** el plano v2 queda publicado como PROPUESTA pendiente de aprobación del autor. La v1 no se elimina: coexiste como referencia para comparación.
 
 **Próximo paso:** revisión del autor del plano v2 (checklist en §10 de `PLANO_DISTRIBUCION_HABITACION_WNL_v2.md`). Tras la aprobación: promocionar a distribución definitiva y avanzar al diseño del escenario panorámico final y sus capas.
+
+
+## ACTUALIZACIÓN — REVISIÓN QA DEL PLANO v2 (2026-11-14)
+
+Se revisaron directamente desde este repositorio el plano v2, el SVG v2 y ambos scripts. También se renderizó el SVG para comprobar la legibilidad real de la composición.
+
+Se creó `AVENTURA GRAFICA/REVISION_QA_PLANO_HABITACION_WNL_V2.md` con los hallazgos y las correcciones propuestas.
+
+Observaciones principales:
+- La leyenda del SVG se superpone al archivador izquierdo y oculta su rótulo.
+- Los marcadores H12 y H14 tapan sus rótulos; H08 queda demasiado próximo al rótulo de la grabadora.
+- H15 aparece en la franja de colisión del escritorio, aunque se describe como hotspot genérico de objetos sobre superficies.
+- El anexo de colisiones del plano contiene la errata `1620, 6690 → 2180, 790`; el dato coherente con la implantación y el SVG es `1620, 690 → 2180, 790`.
+- La fila de la silla y la del rack aparecen concatenadas en la tabla del anexo.
+- El BFS actual verifica puntos sobre una cuadrícula de 8 px con colisiones rectangulares; no incorpora la huella real del personaje ni prueba movimiento, oclusión y cámara dentro de Godot.
+- El verificador SVG comprueba estructura, cantidades y coordenadas, pero no detecta solapes visuales de rótulos, marcadores y leyenda.
+- La mesa baja se define walk-behind y sin colisión; se debe verificar en un Art Test que el personaje pueda pasar por detrás sin atravesar visualmente el tablero y que se pueda alcanzar H14 y la cama correctamente.
+
+**Estado:** V2 sigue siendo PROPUESTA pendiente de aprobación. No se modificaron `PLANO_DISTRIBUCION_HABITACION_WNL_v2.md` ni `MAPA_VISUAL_HOTSPOTS_COLISIONES_WNL_v2.svg` durante esta revisión.
+
+**Próximo paso:** una pasada de corrección de QA visual/editorial, sin alterar la distribución principal; después, volver a presentar la V2 al autor. No iniciar todavía el escenario final ni declarar probada la navegación en Godot.
